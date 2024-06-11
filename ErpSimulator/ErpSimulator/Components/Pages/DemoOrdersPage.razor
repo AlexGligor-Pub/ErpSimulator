@@ -1,0 +1,50 @@
+﻿@page "/demoOrders"
+@using Domain.Entities
+@using Domain.Interfaces
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject IDemoOrderService OrdersService
+
+<PageTitle>Demo Orders</PageTitle>
+
+<h1>Demo Orders</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (demoOrders == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Created</th>
+                <th>State</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in demoOrders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.Name</td>
+                    <td>@order.CreatedDate.ToShortDateString()</td>
+                    <td>@order.State.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<DemoOrder>? demoOrders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        demoOrders = await OrdersService.GetDemoOrdersAsync();
+    }
+}
