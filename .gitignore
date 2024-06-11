@@ -1,32 +1,132 @@
-# Prerequisites
-*.d
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Common node modules
+node_modules/
 
-# Precompiled Headers
-*.gch
-*.pch
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# NUNIT
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
 
-# Fortran module files
-*.mod
-*.smod
+# Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Benchmark Results
+BenchmarkDotNet.Artifacts/
 
-# Executables
-*.exe
-*.out
-*.app
+# .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.dbmdl
+*.dbc
+*.jfm
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono auto generated files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono auto generated files
+mono_crash.*
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Entity Framework Core
+Migrations/
+
+# Rider
+.idea/
+*.sln.iml
+*.sln*
+*.csproj*
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio for Mac
+.vscode/
+.idea/
+
+# Local History for Visual Studio
+.localhistory/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Package Files
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
