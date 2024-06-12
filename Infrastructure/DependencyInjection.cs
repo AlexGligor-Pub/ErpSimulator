@@ -12,6 +12,7 @@ namespace Infrastructure
         {
             services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(dbConnectionString));
             services.AddScoped<IDemoOrderService, DemoOrderService>();
+            services.AddScoped<UnsOrderService>();
             return services;
         }
     }

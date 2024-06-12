@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
+using Domain.Entities.UNS;
 using Domain.Enums;
+using Infrastructure.DataBase;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure
@@ -12,18 +14,28 @@ namespace Infrastructure
 
         }
         public DbSet<DemoOrder> DemoOrders { get; set; }
+        public DbSet<UnsOrder> UnsOrders { get; set; }
+        public DbSet<Component> Components { get; set; }
+        public DbSet<OperationsInstruction> OperationsInstructions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<UnsOrder>()
+                .HasOne(u => u.OperationsInstruction)
+                .WithOne(o => o.UnsOrder)
+                .HasForeignKey<OperationsInstruction>(o => o.ID);
 
-            modelBuilder.Entity<DemoOrder>().HasData(
-            new DemoOrder() { Id = 1, Name = "Order 1", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Created },
-            new DemoOrder() { Id = 2, Name = "Order 2", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.InWork },
-            new DemoOrder() { Id = 3, Name = "Order 3", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Processed},
-            new DemoOrder() { Id = 4, Name = "Order 4", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Deleted },
-            new DemoOrder() { Id = 5, Name = "Order 5", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.None }
-            );
+            modelBuilder.Entity<Component>()
+                .HasOne(c => c.UnsOrder)
+                .WithMany(u => u.ComponentList)
+                .HasForeignKey(c => c.UnsOrderID);
+
+           
+            SeedData.SeedDemoOrderData(modelBuilder);
+            SeedData.SeedUnsOrderData(modelBuilder);
         }
+
+        
     }
 }
