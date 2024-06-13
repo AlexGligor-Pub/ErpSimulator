@@ -10,18 +10,18 @@ namespace Infrastructure.DataBase
         public static void SeedOrdersBucketData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrdersBucket>().HasData(
-                new OrdersBucket() { Id = 1, UnsOrderId = "order1", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 200, StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(9) },
-                new OrdersBucket() { Id = 2, UnsOrderId = "order2", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 500, StartDate = DateTime.Now.AddDays(4), EndDate = DateTime.Now.AddDays(18) }
+                new OrdersBucket() { Id = 1, UnsOrderId = "order1", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 5, StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(9) },
+                new OrdersBucket() { Id = 2, UnsOrderId = "order2", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 10, StartDate = DateTime.Now.AddDays(4), EndDate = DateTime.Now.AddDays(18) }
             );
         }
         public static void SeedDemoOrderData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DemoOrder>().HasData(
             new DemoOrder() { Id = 1, Name = "Order 1", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Created },
-            new DemoOrder() { Id = 2, Name = "Order 2", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.InWork },
-            new DemoOrder() { Id = 3, Name = "Order 3", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Processed },
-            new DemoOrder() { Id = 4, Name = "Order 4", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Deleted },
-            new DemoOrder() { Id = 5, Name = "Order 5", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.None }
+            new DemoOrder() { Id = 2, Name = "Order 2", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Created },
+            new DemoOrder() { Id = 3, Name = "Order 3", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Created },
+            new DemoOrder() { Id = 4, Name = "Order 4", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Created },
+            new DemoOrder() { Id = 5, Name = "Order 5", CreatedDate = DateTime.Now, IsDeleted = false, State = OrderState.Created }
             );
         }
         public static void SeedUnsOrderData(ModelBuilder modelBuilder)
