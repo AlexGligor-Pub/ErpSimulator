@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -33,7 +34,13 @@ namespace Domain.Entities.UNS
 
         public string? Executor { get; set; }
 
+        [JsonIgnore]
+        public OrderState ERPState { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<UnsOrderComponentMap> ComponentList { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<UnsOrderOperationstMap> OperationsInstruction { get; set; }
 
         [JsonIgnore]

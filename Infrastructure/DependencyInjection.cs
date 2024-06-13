@@ -14,6 +14,8 @@ namespace Infrastructure
             services.AddScoped<IDemoOrderService, DemoOrderService>();
             services.AddScoped<UnsOrderService>();
             services.AddScoped<OrdersBucketService>();
+            services.AddScoped<OrderStateMachineService>();
+            services.AddScoped<BucketOrderProcessorService>();
             return services;
         }
     }

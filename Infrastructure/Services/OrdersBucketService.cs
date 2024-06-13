@@ -7,15 +7,17 @@ namespace Infrastructure.Services
 {
     public class OrdersBucketService
     {
+        private BucketOrderProcessorService bucketOrderProcessorService;
         private readonly SqlDbContext _context;
 
         private readonly UnsOrderService _unsOrderService;
 
-        public OrdersBucketService(SqlDbContext context, UnsOrderService unsOrderService)
+        public OrdersBucketService(SqlDbContext context, UnsOrderService unsOrderService, BucketOrderProcessorService bucketOrderProcessorService)
         {
             _context = context;
             _unsOrderService = unsOrderService;
             _context.Database.EnsureCreated();
+            this.bucketOrderProcessorService = bucketOrderProcessorService;
         }
 
         // Create OrdersBucket
@@ -54,14 +56,14 @@ namespace Infrastructure.Services
                     order.OrdersBucketId = ordersBucket.Id;
 
                     var operations = new List<UnsOrderOperationstMap>();
-                    foreach (var operation in ordersBucket.UnsOrder.OperationsInstruction)
-                        operations.Add(new UnsOrderOperationstMap() { UnsOrderId = order.ID, OperationsInstructionId = operation.OperationsInstructionId });
-                    order.OperationsInstruction = operations;
+                    //foreach (var operation in ordersBucket.UnsOrder.OperationsInstruction)
+                    //    operations.Add(new UnsOrderOperationstMap() { UnsOrderId = order.ID, OperationsInstructionId = operation.OperationsInstructionId });
+                    //order.OperationsInstruction = operations;
 
-                    var components = new List<UnsOrderComponentMap>();
-                    foreach (var operation in ordersBucket.UnsOrder.ComponentList)
-                        components.Add(new UnsOrderComponentMap() { UnsOrderId = order.ID, ComponentId = operation.ComponentId });
-                    order.ComponentList = components;
+                    //var components = new List<UnsOrderComponentMap>();
+                    //foreach (var operation in ordersBucket.UnsOrder.ComponentList)
+                    //    components.Add(new UnsOrderComponentMap() { UnsOrderId = order.ID, ComponentId = operation.ComponentId });
+                    //order.ComponentList = components;
 
                     await _unsOrderService.CreateUnsOrderAsync(order);
                 }
@@ -69,6 +71,13 @@ namespace Infrastructure.Services
             }
           
             ordersBucket.State = BucketOrdersState.OrdersAreReady;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Sent(OrdersBucket order)
+        {
+            await bucketOrderProcessorService.SentToUNS(order.UnsOrders.ToList());
+            order.State = Domain.Enums.BucketOrdersState.Sent;
             await _context.SaveChangesAsync();
         }
 

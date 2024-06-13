@@ -2,10 +2,8 @@
 {
     public enum OrderState
     {
-        None = 1,
+        New = 1,
         Created = 2,
-        InWork =3,
-        Processed = 4,
-        Deleted = 5
+        SentToUNS =3
     }
 }
