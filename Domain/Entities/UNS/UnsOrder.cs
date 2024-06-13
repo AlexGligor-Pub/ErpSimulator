@@ -37,11 +37,15 @@ namespace Domain.Entities.UNS
         [JsonIgnore]
         public OrderState ERPState { get; set; }
 
-        [JsonIgnore]
-        public virtual ICollection<UnsOrderComponentMap> ComponentList { get; set; }
+        public List<Component> ComponentList { get; set; }
+
+        public List<OperationsInstruction> OperationsInstruction { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<UnsOrderOperationstMap> OperationsInstruction { get; set; }
+        public virtual ICollection<UnsOrderComponentMap> ComponentListMap { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<UnsOrderOperationstMap> OperationsInstructionMap { get; set; }
 
         [JsonIgnore]
         public int? OrdersBucketId { get; set; }

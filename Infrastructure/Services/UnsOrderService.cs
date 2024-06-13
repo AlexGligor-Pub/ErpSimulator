@@ -37,21 +37,27 @@ namespace Infrastructure.Services
         // Read all UnsOrder 
         public async Task<List<UnsOrder>> GetUnsOrdersAsync()
         {
-            return await _context.UnsOrders
-                                 .Include(u => u.ComponentList)
+            var orders =  await _context.UnsOrders
+                                 .Include(u => u.ComponentListMap)
                                     .ThenInclude(uc => uc.Component)
-                                 .Include(u => u.OperationsInstruction)
+                                 .Include(u => u.OperationsInstructionMap)
                                     .ThenInclude(uc => uc.OperationsInstruction)
                                  .ToListAsync();
+
+            return orders.Select(o => {
+                o.ComponentList = o.ComponentListMap.Select(cl => cl.Component).ToList();
+                o.OperationsInstruction = o.OperationsInstructionMap.Select(cl => cl.OperationsInstruction).ToList();
+                return o;
+            }).ToList();
         }
 
         // Read UnsOrder by ID
         public async Task<UnsOrder> GetUnsOrderByIdAsync(string id)
         {
             return await _context.UnsOrders
-                                 .Include(u => u.ComponentList)
+                                 .Include(u => u.ComponentListMap)
                                     .ThenInclude(uc => uc.Component)
-                                 .Include(u => u.OperationsInstruction)
+                                 .Include(u => u.OperationsInstructionMap)
                                     .ThenInclude(uc => uc.OperationsInstruction)
                                  .Include(u => u.OrdersBucket)
                                  .FirstOrDefaultAsync(u => u.ID == id);

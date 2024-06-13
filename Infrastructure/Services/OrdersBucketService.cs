@@ -56,14 +56,14 @@ namespace Infrastructure.Services
                     order.OrdersBucketId = ordersBucket.Id;
 
                     var operations = new List<UnsOrderOperationstMap>();
-                    //foreach (var operation in ordersBucket.UnsOrder.OperationsInstruction)
-                    //    operations.Add(new UnsOrderOperationstMap() { UnsOrderId = order.ID, OperationsInstructionId = operation.OperationsInstructionId });
-                    //order.OperationsInstruction = operations;
+                    foreach (var operation in ordersBucket.UnsOrder.OperationsInstructionMap)
+                        operations.Add(new UnsOrderOperationstMap() { UnsOrderId = order.ID, OperationsInstructionId = operation.OperationsInstructionId });
+                    order.OperationsInstructionMap = operations;
 
-                    //var components = new List<UnsOrderComponentMap>();
-                    //foreach (var operation in ordersBucket.UnsOrder.ComponentList)
-                    //    components.Add(new UnsOrderComponentMap() { UnsOrderId = order.ID, ComponentId = operation.ComponentId });
-                    //order.ComponentList = components;
+                    var components = new List<UnsOrderComponentMap>();
+                    foreach (var operation in ordersBucket.UnsOrder.ComponentListMap)
+                        components.Add(new UnsOrderComponentMap() { UnsOrderId = order.ID, ComponentId = operation.ComponentId });
+                    order.ComponentListMap = components;
 
                     await _unsOrderService.CreateUnsOrderAsync(order);
                 }
@@ -84,10 +84,32 @@ namespace Infrastructure.Services
         // Read all OrdersBucket 
         public async Task<List<OrdersBucket>> GetOrdersBucketAsync()
         {
-            return await _context.OrdersBucket
+            var orders = await _context.OrdersBucket
                                  .Include(u => u.UnsOrders)
+                                      .ThenInclude(o => o.ComponentListMap)
+                                        .ThenInclude(uc => uc.Component)
+                                 .Include(u => u.UnsOrders)
+                                      .ThenInclude(o => o.OperationsInstructionMap)
+                                        .ThenInclude(uo => uo.OperationsInstruction)
                                  .Include(u => u.UnsOrder)
+                                     .ThenInclude(o => o.ComponentListMap)
+                                        .ThenInclude(uc => uc.Component)
+                                 .Include(u => u.UnsOrder)
+                                      .ThenInclude(o => o.OperationsInstructionMap)
+                                        .ThenInclude(uo => uo.OperationsInstruction)
                                  .ToListAsync();
+
+           
+            return orders.Select(o => {
+                o.UnsOrder.ComponentList = o.UnsOrder.ComponentListMap.Select(cl => cl.Component).ToList();
+                o.UnsOrder.OperationsInstruction = o.UnsOrder.OperationsInstructionMap.Select(cl => cl.OperationsInstruction).ToList();
+                foreach (var order in o.UnsOrders)
+                {
+                    order.ComponentList = order.ComponentListMap.Select(cl => cl.Component).ToList();
+                    order.OperationsInstruction = order.OperationsInstructionMap.Select(cl => cl.OperationsInstruction).ToList();
+                }
+                return o;
+            }).ToList();
         }
 
         // Read OrdersBucket by ID
@@ -95,7 +117,17 @@ namespace Infrastructure.Services
         {
             return await _context.OrdersBucket
                                  .Include(u => u.UnsOrders)
+                                  .ThenInclude(o => o.ComponentListMap)
+                                    .ThenInclude(uc => uc.Component)
+                                 .Include(u => u.UnsOrders)
+                                  .ThenInclude(o => o.OperationsInstructionMap)
+                                    .ThenInclude(uo => uo.OperationsInstruction)
                                  .Include(u => u.UnsOrder)
+                                    .ThenInclude(o => o.ComponentListMap)
+                                        .ThenInclude(uc => uc.Component)
+                                     .Include(u => u.UnsOrders)
+                                      .ThenInclude(o => o.OperationsInstructionMap)
+                                        .ThenInclude(uo => uo.OperationsInstruction)
                                  .FirstOrDefaultAsync(u => u.Id == id);
         }
 

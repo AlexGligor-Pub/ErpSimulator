@@ -28,7 +28,7 @@ namespace Infrastructure
 
             modelBuilder.Entity<UnsOrderComponentMap>()
                 .HasOne(uc => uc.UnsOrder)
-                .WithMany(u => u.ComponentList)
+                .WithMany(u => u.ComponentListMap)
                 .HasForeignKey(uc => uc.UnsOrderId);
 
             modelBuilder.Entity<UnsOrderComponentMap>()
@@ -42,7 +42,7 @@ namespace Infrastructure
 
             modelBuilder.Entity<UnsOrderOperationstMap>()
                 .HasOne(uo => uo.UnsOrder)
-                .WithMany(u => u.OperationsInstruction)
+                .WithMany(u => u.OperationsInstructionMap)
                 .HasForeignKey(uo => uo.UnsOrderId);
 
             modelBuilder.Entity<UnsOrderOperationstMap>()
