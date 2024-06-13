@@ -7,6 +7,13 @@ namespace Infrastructure.DataBase
 {
     public static class SeedData
     {
+        public static void SeedOrdersBucketData(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrdersBucket>().HasData(
+                new OrdersBucket() { Id = 1, UnsOrderId = "order1", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 200, StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(9) },
+                new OrdersBucket() { Id = 2, UnsOrderId = "order2", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 500, StartDate = DateTime.Now.AddDays(4), EndDate = DateTime.Now.AddDays(18) }
+            );
+        }
         public static void SeedDemoOrderData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DemoOrder>().HasData(

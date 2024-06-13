@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities.UNS
 {
@@ -34,5 +36,17 @@ namespace Domain.Entities.UNS
         public virtual ICollection<Component> ComponentList { get; set; }
 
         public virtual OperationsInstruction OperationsInstruction { get; set; }
+
+        [JsonIgnore]
+        public int? OrdersBucketId { get; set; }
+
+        [ForeignKey("OrdersBucketId")]
+        [JsonIgnore]
+        public virtual OrdersBucket? OrdersBucket { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

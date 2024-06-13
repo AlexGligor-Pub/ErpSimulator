@@ -1,0 +1,88 @@
+﻿@page "/OrdersBucket"
+@using Domain.Entities
+@using System.Text.Json;
+@using Domain.Entities.UNS
+@using Domain.Interfaces
+@using Infrastructure.Services
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject OrdersBucketService ordersBucketService
+
+<PageTitle>Bucket Orders</PageTitle>
+
+<h1>Bucket Orders</h1>
+
+@if (buckets == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>UNS Order Id</th>
+                <th>Status</th>
+                <th>Request Count</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Created</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in buckets)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.UnsOrder.ID</td>
+                    <td>@order.State</td>
+                    <td>@order.RequestCount</td>
+                    <td>@order.StartDate</td>
+                    <td>@order.EndDate</td>
+                    <td>@order.Created</td>
+                    @if (order.UnsOrders.Count == 0)
+                    {
+                        <button class="btn btn-primary p-1 m-1" style="color: black;"  @onclick="()=>GenerateOrders(order)">Generate Orders</button>
+                    }
+                    else
+                    {
+                        if (order.State == Domain.Enums.BucketOrdersState.Created)
+                        {
+                            <button class="btn btn-secundary p-1 m-1" style="color: black;"  @onclick="()=>SendBucket(order)">Send to UNS</button>
+                        }
+                        else
+                        {
+                            <p>All done!</p>
+                        }
+
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<OrdersBucket>? buckets;
+    private bool isModalVisible = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        buckets = await ordersBucketService.GetOrdersBucketAsync();
+    }
+
+    private async void GenerateOrders(OrdersBucket order)
+    {
+        await ordersBucketService.GenerateOrdersAsync(order);
+        StateHasChanged();
+    }
+
+    private async void SendBucket(OrdersBucket order)
+    {
+        //send order code
+
+        StateHasChanged();
+    }
+}

@@ -17,14 +17,20 @@ namespace Infrastructure
         public DbSet<UnsOrder> UnsOrders { get; set; }
         public DbSet<Component> Components { get; set; }
         public DbSet<OperationsInstruction> OperationsInstructions { get; set; }
+        public DbSet<OrdersBucket> OrdersBucket { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UnsOrder>()
-                .HasOne(u => u.OperationsInstruction)
-                .WithOne(o => o.UnsOrder)
-                .HasForeignKey<OperationsInstruction>(o => o.ID);
+                .HasOne(c => c.OrdersBucket)
+                .WithMany(u => u.UnsOrders)
+                .HasForeignKey(c => c.OrdersBucketId);
+
+            //modelBuilder.Entity<UnsOrder>()
+            //    .HasOne(u => u.OperationsInstruction)
+            //    .WithOne(o => o.UnsOrder)
+            //    .HasForeignKey<OperationsInstruction>(o => o.ID);
 
             modelBuilder.Entity<Component>()
                 .HasOne(c => c.UnsOrder)
@@ -34,6 +40,7 @@ namespace Infrastructure
            
             SeedData.SeedDemoOrderData(modelBuilder);
             SeedData.SeedUnsOrderData(modelBuilder);
+            SeedData.SeedOrdersBucketData(modelBuilder);
         }
 
         

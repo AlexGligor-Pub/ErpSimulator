@@ -49,6 +49,7 @@ namespace Infrastructure.Services
             return await _context.UnsOrders
                                  .Include(u => u.ComponentList)
                                  .Include(u => u.OperationsInstruction)
+                                 .Include(u => u.OrdersBucket)
                                  .FirstOrDefaultAsync(u => u.ID == id);
         }
 
