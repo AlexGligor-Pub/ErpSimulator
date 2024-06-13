@@ -6,7 +6,7 @@ namespace Domain.Entities.UNS
 {
     public class OperationsInstruction
     {
-        [Key, ForeignKey("UnsOrder")]
+        [Key]
         public string ID { get; set; }
 
         public string? Description { get; set; }
@@ -24,6 +24,6 @@ namespace Domain.Entities.UNS
         public DateTime EndTime { get; set; }
 
         [JsonIgnore]
-        public virtual UnsOrder UnsOrder { get; set; }
+        public virtual ICollection<UnsOrderOperationstMap> UnsOrderList { get; set; }
     }
 }

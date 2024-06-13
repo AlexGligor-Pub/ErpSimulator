@@ -14,10 +14,7 @@ namespace Domain.Entities.UNS
         public string UnitOfMeasure { get; set; }
 
         [JsonIgnore]
-        public string? UnsOrderID { get; set; }
+        public virtual ICollection<UnsOrderComponentMap> UnsOrderList { get; set; }
 
-        [ForeignKey("UnsOrderID")]
-        [JsonIgnore]
-        public virtual UnsOrder UnsOrder { get; set; }
     }
 }

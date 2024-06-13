@@ -22,22 +22,41 @@ namespace Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UnsOrder>()
-                .HasOne(c => c.OrdersBucket)
-                .WithMany(u => u.UnsOrders)
-                .HasForeignKey(c => c.OrdersBucketId);
+            // Many-to-Many relationship between UnsOrder and Component
+            modelBuilder.Entity<UnsOrderComponentMap>()
+                .HasKey(uc => new { uc.UnsOrderId, uc.ComponentId });
 
-            //modelBuilder.Entity<UnsOrder>()
-            //    .HasOne(u => u.OperationsInstruction)
-            //    .WithOne(o => o.UnsOrder)
-            //    .HasForeignKey<OperationsInstruction>(o => o.ID);
-
-            modelBuilder.Entity<Component>()
-                .HasOne(c => c.UnsOrder)
+            modelBuilder.Entity<UnsOrderComponentMap>()
+                .HasOne(uc => uc.UnsOrder)
                 .WithMany(u => u.ComponentList)
-                .HasForeignKey(c => c.UnsOrderID);
+                .HasForeignKey(uc => uc.UnsOrderId);
 
-           
+            modelBuilder.Entity<UnsOrderComponentMap>()
+                .HasOne(uc => uc.Component)
+                .WithMany(c => c.UnsOrderList)
+                .HasForeignKey(uc => uc.ComponentId);
+
+            // Many-to-Many relationship between UnsOrder and OperationsInstruction
+            modelBuilder.Entity<UnsOrderOperationstMap>()
+                .HasKey(uo => new { uo.UnsOrderId, uo.OperationsInstructionId });
+
+            modelBuilder.Entity<UnsOrderOperationstMap>()
+                .HasOne(uo => uo.UnsOrder)
+                .WithMany(u => u.OperationsInstruction)
+                .HasForeignKey(uo => uo.UnsOrderId);
+
+            modelBuilder.Entity<UnsOrderOperationstMap>()
+                .HasOne(uo => uo.OperationsInstruction)
+                .WithMany(o => o.UnsOrderList)
+                .HasForeignKey(uo => uo.OperationsInstructionId);
+
+            // One-to-Many relationship between OrdersBucket and UnsOrder
+            modelBuilder.Entity<UnsOrder>()
+                .HasOne(o => o.OrdersBucket)
+                .WithMany(b => b.UnsOrders)
+                .HasForeignKey(o => o.OrdersBucketId);
+
+
             SeedData.SeedDemoOrderData(modelBuilder);
             SeedData.SeedUnsOrderData(modelBuilder);
             SeedData.SeedOrdersBucketData(modelBuilder);

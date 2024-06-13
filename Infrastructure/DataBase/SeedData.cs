@@ -94,31 +94,43 @@ namespace Infrastructure.DataBase
             {
                 ComponentId = "comp1",
                 Quantity = 10,
-                UnitOfMeasure = "pcs",
-                UnsOrderID = "order1"
+                UnitOfMeasure = "pcs"
             },
             new Component
             {
                 ComponentId = "comp2",
                 Quantity = 20,
-                UnitOfMeasure = "pcs",
-                UnsOrderID = "order1"
+                UnitOfMeasure = "pcs"
             },
             new Component
             {
                 ComponentId = "comp3",
                 Quantity = 30,
-                UnitOfMeasure = "pcs",
-                UnsOrderID = "order2"
+                UnitOfMeasure = "pcs"
             },
             new Component
             {
                 ComponentId = "comp4",
                 Quantity = 40,
-                UnitOfMeasure = "pcs",
-                UnsOrderID = "order2"
+                UnitOfMeasure = "pcs"
             }
         };
+            var ordercomponentlist = new List<UnsOrderComponentMap>()
+            {
+                new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "comp1"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "comp2"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "comp3"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "comp4"  },
+            };
+
+            var orderinstructionlist = new List<UnsOrderOperationstMap>()
+            {
+                new UnsOrderOperationstMap(){UnsOrderId = "order1", OperationsInstructionId = "order1"  },
+                new UnsOrderOperationstMap(){UnsOrderId = "order2", OperationsInstructionId = "order2"  },
+            };
+
+            modelBuilder.Entity<UnsOrderComponentMap>().HasData(ordercomponentlist);
+            modelBuilder.Entity<UnsOrderOperationstMap>().HasData(orderinstructionlist);
 
             modelBuilder.Entity<UnsOrder>().HasData(unsOrders);
             modelBuilder.Entity<OperationsInstruction>().HasData(operationsInstructions);

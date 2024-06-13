@@ -35,22 +35,37 @@ namespace Infrastructure.Services
             ordersBucket.State = BucketOrdersState.GeneratingOrders;
             await _context.SaveChangesAsync();
 
-            var seconds = (ordersBucket.StartDate - ordersBucket.EndDate).TotalSeconds;
+            var seconds = (ordersBucket.EndDate - ordersBucket.StartDate).TotalSeconds/ordersBucket.RequestCount;
             var startDate = ordersBucket.StartDate;
 
             Random random = new Random(100000);
             for (var i = 0; i < ordersBucket.RequestCount; i++) 
             {
-                var order =(UnsOrder)ordersBucket.UnsOrder.Clone();
+                try
+                {
+                    var order = (UnsOrder)ordersBucket.UnsOrder.Clone();
 
-                order.ID = order.ID + "_"+i.ToString() + DateTime.Now.Ticks.ToString() + random.Next().ToString();
-                order.StartTime = startDate;
-                order.EndTime = startDate.AddSeconds(seconds);
-                startDate = order.EndTime;
+                    order.ID = order.ID + "_" + i.ToString() + DateTime.Now.Ticks.ToString() + random.Next().ToString();
+                    order.StartTime = startDate;
+                    order.EndTime = startDate.AddSeconds(seconds);
+                    startDate = order.EndTime;
 
-                order.OrdersBucket = ordersBucket;
-                order.OrdersBucketId = ordersBucket.Id;
-                await _unsOrderService.CreateUnsOrderAsync(order);
+                    order.OrdersBucket = ordersBucket;
+                    order.OrdersBucketId = ordersBucket.Id;
+
+                    var operations = new List<UnsOrderOperationstMap>();
+                    foreach (var operation in ordersBucket.UnsOrder.OperationsInstruction)
+                        operations.Add(new UnsOrderOperationstMap() { UnsOrderId = order.ID, OperationsInstructionId = operation.OperationsInstructionId });
+                    order.OperationsInstruction = operations;
+
+                    var components = new List<UnsOrderComponentMap>();
+                    foreach (var operation in ordersBucket.UnsOrder.ComponentList)
+                        components.Add(new UnsOrderComponentMap() { UnsOrderId = order.ID, ComponentId = operation.ComponentId });
+                    order.ComponentList = components;
+
+                    await _unsOrderService.CreateUnsOrderAsync(order);
+                }
+                catch (Exception ex) { }
             }
           
             ordersBucket.State = BucketOrdersState.OrdersAreReady;

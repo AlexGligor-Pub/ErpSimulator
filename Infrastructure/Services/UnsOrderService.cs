@@ -39,7 +39,9 @@ namespace Infrastructure.Services
         {
             return await _context.UnsOrders
                                  .Include(u => u.ComponentList)
+                                    .ThenInclude(uc => uc.Component)
                                  .Include(u => u.OperationsInstruction)
+                                    .ThenInclude(uc => uc.OperationsInstruction)
                                  .ToListAsync();
         }
 
@@ -48,7 +50,9 @@ namespace Infrastructure.Services
         {
             return await _context.UnsOrders
                                  .Include(u => u.ComponentList)
+                                    .ThenInclude(uc => uc.Component)
                                  .Include(u => u.OperationsInstruction)
+                                    .ThenInclude(uc => uc.OperationsInstruction)
                                  .Include(u => u.OrdersBucket)
                                  .FirstOrDefaultAsync(u => u.ID == id);
         }
@@ -57,7 +61,8 @@ namespace Infrastructure.Services
         public async Task<Component> GetComponentByIdAsync(string id)
         {
             return await _context.Components
-                                 .Include(c => c.UnsOrder)
+                                 .Include(c => c.UnsOrderList)
+                                    .ThenInclude(uc => uc.Component)
                                  .FirstOrDefaultAsync(c => c.ComponentId == id);
         }
 
@@ -65,7 +70,8 @@ namespace Infrastructure.Services
         public async Task<OperationsInstruction> GetOperationsInstructionByIdAsync(string id)
         {
             return await _context.OperationsInstructions
-                                 .Include(o => o.UnsOrder)
+                                 .Include(o => o.UnsOrderList)
+                                    .ThenInclude(uc => uc.OperationsInstruction)
                                  .FirstOrDefaultAsync(o => o.ID == id);
         }
 

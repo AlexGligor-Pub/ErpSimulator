@@ -33,14 +33,12 @@ namespace Domain.Entities.UNS
 
         public string? Executor { get; set; }
 
-        public virtual ICollection<Component> ComponentList { get; set; }
-
-        public virtual OperationsInstruction OperationsInstruction { get; set; }
+        public virtual ICollection<UnsOrderComponentMap> ComponentList { get; set; }
+        public virtual ICollection<UnsOrderOperationstMap> OperationsInstruction { get; set; }
 
         [JsonIgnore]
         public int? OrdersBucketId { get; set; }
 
-        [ForeignKey("OrdersBucketId")]
         [JsonIgnore]
         public virtual OrdersBucket? OrdersBucket { get; set; }
 
