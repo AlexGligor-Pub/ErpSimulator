@@ -1,5 +1,7 @@
 using HiveMQtt.Client;
 using HiveMQtt.Client.Options;
+using Infrastructure.Configuration;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Configuration;
 
@@ -7,26 +9,23 @@ public class MQTTPublisher
 {
     private HiveMQClientOptions options;
     private HiveMQClient client;
+    private IConfiguration configuration;
+    private string topic;
 
-    public MQTTPublisher(HiveMQClientOptions options)
+    public MQTTPublisher( IConfiguration configuration)
     {
-        this.options = options;
+        this.configuration = configuration;
         client = new HiveMQClient(options);
-    }
-
-    public MQTTPublisher()
-    {
-        //get options from config file
+        topic = configuration["MQTT:topic"];
         options = new HiveMQClientOptions
         {
-            Host = ConfigurationManager.AppSettings["host"],
-            Port = Int32.Parse(ConfigurationManager.AppSettings["port"]),
-            UserName = ConfigurationManager.AppSettings["user"],
-            Password = ConfigurationManager.AppSettings["pwd"],
+            Host = configuration["MQTT:host"],
+            Port = Int32.Parse(configuration["MQTT:port"]),
+            UserName = configuration["MQTT:user"],
+            Password = configuration["MQTT:pwd"],
             UseTLS = true
-        };       
+        };
     }
-
     public async Task ConnectToBroker()
     {
         var connectResult = await client.ConnectAsync().ConfigureAwait(false);
@@ -34,11 +33,20 @@ public class MQTTPublisher
         { 
             throw new Exception("Connection to HiveMQ failed: " + connectResult.ReasonString);
         }
-
     }
 
-    public async Task PublishMessage(string topic, string message)
+    public async Task<bool> PublishMessage(string message)
     {
-        await client.PublishAsync(topic, message).ConfigureAwait(false);
+        try
+        {
+            await ConnectToBroker();
+            await client.PublishAsync(topic, message).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return false;
+        }
+        return true;
     }
 }
