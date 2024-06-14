@@ -11,6 +11,7 @@ public class MQTTPublisher
     public MQTTPublisher(HiveMQClientOptions options)
     {
         this.options = options;
+        client = new HiveMQClient(options);
     }
 
     public MQTTPublisher()
