@@ -15,17 +15,24 @@ public class MQTTPublisher
     public MQTTPublisher( IConfiguration configuration)
     {
         this.configuration = configuration;
+        ConfigureOptions();
+
         client = new HiveMQClient(options);
+    }
+
+    private void ConfigureOptions()
+    {
         topic = configuration["MQTT:topic"];
         options = new HiveMQClientOptions
         {
             Host = configuration["MQTT:host"],
             Port = Int32.Parse(configuration["MQTT:port"]),
-            UserName = configuration["MQTT:user"],
-            Password = configuration["MQTT:pwd"],
+            UserName = configuration["MQTT:username"],
+            Password = configuration["MQTT:password"],
             UseTLS = true
         };
     }
+
     public async Task ConnectToBroker()
     {
         var connectResult = await client.ConnectAsync().ConfigureAwait(false);

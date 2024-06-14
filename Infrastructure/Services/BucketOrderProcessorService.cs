@@ -10,29 +10,24 @@ namespace Infrastructure.Services
         OrderStateMachineService orderStateMachineService;
         public BucketOrderProcessorService(OrderStateMachineService orderStateMachineService, MQTTPublisher mQTT)
         {
-
             this.orderStateMachineService = orderStateMachineService;
             mQTTPublisher = mQTT;
-
         }
-        public async Task SentToUNS(List<UnsOrder> unsOrders)
+        public async Task<bool> SentToUNS(List<UnsOrder> unsOrders)
         {
             string jsonString = JsonSerializer.Serialize(unsOrders);
-
             
             var isSent = await mQTTPublisher.PublishMessage(jsonString);
 
             if(isSent == false) 
-                return;
+                return false;
 
             foreach (var unsOrder in unsOrders)
             {
                 if(unsOrder.ERPState == Domain.Enums.OrderState.Created)
-                {
                     await orderStateMachineService.ChangeState(unsOrder);
-                }
-                
             }
+            return true;
         }
     }
 }

@@ -76,7 +76,9 @@ namespace Infrastructure.Services
 
         public async Task Sent(OrdersBucket order)
         {
-            await bucketOrderProcessorService.SentToUNS(order.UnsOrders.ToList());
+            var isSent = await bucketOrderProcessorService.SentToUNS(order.UnsOrders.ToList());
+            if (!isSent)
+                return;
             order.State = Domain.Enums.BucketOrdersState.Sent;
             await _context.SaveChangesAsync();
         }
