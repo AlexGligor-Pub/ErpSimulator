@@ -15,7 +15,8 @@ namespace Infrastructure.Services
         }
         public async Task<bool> SentToUNS(List<UnsOrder> unsOrders)
         {
-            string jsonString = JsonSerializer.Serialize(unsOrders);
+            var prodOrd = new ProdOrders() { ProductionOrders = unsOrders };
+            string jsonString = JsonSerializer.Serialize(prodOrd);
             
             var isSent = await mQTTPublisher.PublishMessage(jsonString);
 
@@ -28,6 +29,11 @@ namespace Infrastructure.Services
                     await orderStateMachineService.ChangeState(unsOrder);
             }
             return true;
+        }
+
+        private class ProdOrders
+        {
+            public List<UnsOrder> ProductionOrders { get; set; }    
         }
     }
 }
