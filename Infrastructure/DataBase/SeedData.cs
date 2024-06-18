@@ -32,15 +32,15 @@ namespace Infrastructure.DataBase
             {
                 ID = "order1",
                 Description = "Order 1 description",
-                Type = "Type1",
+                Type = "1",
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(1),
                 Priority = "High",
                 OrderState = "Open",
                 Status = "Active",
-                MaterialId = "mat1",
+                MaterialId = "Material3",
                 OrderQuantity = 100,
-                UnitOfMeasure = "pcs",
+                UnitOfMeasure = "LTR",
                 Facility = "Facility1",
                 Executor = "Executor1"
             },
@@ -48,15 +48,15 @@ namespace Infrastructure.DataBase
             {
                 ID = "order2",
                 Description = "Order 2 description",
-                Type = "Type2",
+                Type = "1",
                 StartTime = DateTime.Now.AddHours(2),
                 EndTime = DateTime.Now.AddHours(3),
                 Priority = "Medium",
                 OrderState = "Closed",
                 Status = "Inactive",
-                MaterialId = "mat2",
+                MaterialId = "Material3",
                 OrderQuantity = 200,
-                UnitOfMeasure = "pcs",
+                UnitOfMeasure = "LTR",
                 Facility = "Facility2",
                 Executor = "Executor2"
             }
@@ -92,27 +92,27 @@ namespace Infrastructure.DataBase
         {
             new Component
             {
-                ComponentId = "comp1",
-                Quantity = 10,
-                UnitOfMeasure = "pcs"
+                ComponentId = "Material1",
+                Quantity = 100,
+                UnitOfMeasure = "LTR"
             },
             new Component
             {
-                ComponentId = "comp2",
-                Quantity = 20,
-                UnitOfMeasure = "pcs"
+                ComponentId = "Material2",
+                Quantity = 200,
+                UnitOfMeasure = "LTR"
             },
             new Component
             {
-                ComponentId = "comp3",
-                Quantity = 30,
-                UnitOfMeasure = "pcs"
+                ComponentId = "Material1",
+                Quantity = 300,
+                UnitOfMeasure = "LTR"
             },
             new Component
             {
-                ComponentId = "comp4",
-                Quantity = 40,
-                UnitOfMeasure = "pcs"
+                ComponentId = "Material2",
+                Quantity = 400,
+                UnitOfMeasure = "LTR"
             }
         };
             var ordercomponentlist = new List<UnsOrderComponentMap>()
