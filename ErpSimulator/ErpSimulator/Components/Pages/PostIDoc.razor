@@ -1,0 +1,33 @@
+﻿@page "/postIdoc"
+@using Infrastructure.SAPDM
+@inject ApiService ApiService
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+<h3>Send Data</h3>
+
+<button @onclick="PostData">Post Data</button>
+
+@if (responseMessage != null)
+{
+    <p>Response: @responseMessage</p>
+    <p>Error Code: @errorCode</p>
+}
+
+@code {
+    private string responseMessage;
+
+    private string errorCode;
+
+    private async Task PostData()
+    {
+        var data = new { Name = "Test", Value = "123" }; // Exemplu de date de trimis
+
+        string fileContent = File.ReadAllText(@"C:\Users\dan-alexandru.gligor\Downloads\Idoc.txt");
+        var response = await ApiService.PostDataAsync("https://accenture-prod-opsmessolution-va627rp8.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/cxf/GenericMessageProcessor_00", fileContent);
+        responseMessage = await response.Content.ReadAsStringAsync();
+        errorCode = response.StatusCode.ToString();
+
+        StateHasChanged();
+    }
+}

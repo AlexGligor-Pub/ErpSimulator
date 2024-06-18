@@ -1,7 +1,5 @@
 ﻿using Domain.Entities;
 using Domain.Entities.UNS;
-using Domain.Enums;
-using Infrastructure.Configuration;
 using Infrastructure.DataBase;
 using Microsoft.EntityFrameworkCore;
 
