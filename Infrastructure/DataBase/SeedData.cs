@@ -104,23 +104,23 @@ namespace Infrastructure.DataBase
             },
             new Component
             {
-                ComponentId = "Material1",
+                ComponentId = "Material3",
                 Quantity = 300,
                 UnitOfMeasure = "LTR"
             },
             new Component
             {
-                ComponentId = "Material2",
+                ComponentId = "Material4",
                 Quantity = 400,
                 UnitOfMeasure = "LTR"
             }
         };
             var ordercomponentlist = new List<UnsOrderComponentMap>()
             {
-                new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "comp1"  },
-                new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "comp2"  },
-                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "comp3"  },
-                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "comp4"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "Material1"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "Material2"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "Material3"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "Material4"  },
             };
 
             var orderinstructionlist = new List<UnsOrderOperationstMap>()
