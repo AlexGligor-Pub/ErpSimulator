@@ -10,8 +10,8 @@ namespace Infrastructure.DataBase
         public static void SeedOrdersBucketData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrdersBucket>().HasData(
-                new OrdersBucket() { Id = 1, UnsOrderId = "order1", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 5, StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(9) },
-                new OrdersBucket() { Id = 2, UnsOrderId = "order2", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 10, StartDate = DateTime.Now.AddDays(4), EndDate = DateTime.Now.AddDays(18) }
+                new OrdersBucket() { Id = 1, UnsOrderId = "order1", Created = DateTime.UtcNow, State = BucketOrdersState.Created, RequestCount = 5, StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(9) },
+                new OrdersBucket() { Id = 2, UnsOrderId = "order2", Created = DateTime.UtcNow, State = BucketOrdersState.Created, RequestCount = 10, StartDate = DateTime.Now.AddDays(4), EndDate = DateTime.Now.AddDays(18) }
             );
         }
         public static void SeedDemoOrderData(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace Infrastructure.DataBase
                 MaterialId = "Material3",
                 OrderQuantity = 100,
                 UnitOfMeasure = "LTR",
-                Facility = "Facility1",
+                Facility = "CJ",
                 Executor = "Executor1"
             },
             new UnsOrder
@@ -57,7 +57,7 @@ namespace Infrastructure.DataBase
                 MaterialId = "Material3",
                 OrderQuantity = 200,
                 UnitOfMeasure = "LTR",
-                Facility = "Facility2",
+                Facility = "MS",
                 Executor = "Executor2"
             }
         };
@@ -70,7 +70,7 @@ namespace Infrastructure.DataBase
                 Description = "Operations for Order 1",
                 WorkMasterID = "WM1",
                 WorkMasterVersion = "1.0",
-                WorkCenter = "WC1",
+                WorkCenter = "Area1",
                 Equipment = "EQ1",
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now.AddHours(1)
@@ -81,7 +81,7 @@ namespace Infrastructure.DataBase
                 Description = "Operations for Order 2",
                 WorkMasterID = "WM2",
                 WorkMasterVersion = "1.1",
-                WorkCenter = "WC2",
+                WorkCenter = "Area1",
                 Equipment = "EQ2",
                 StartTime = DateTime.Now.AddHours(2),
                 EndTime = DateTime.Now.AddHours(3)

@@ -21,10 +21,16 @@ namespace Infrastructure.SAPDM
             var token = await _authService.GetAccessTokenAsync();
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            request.Content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+            request.Content = new StringContent(data, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+            }
             return response;
         }
     }

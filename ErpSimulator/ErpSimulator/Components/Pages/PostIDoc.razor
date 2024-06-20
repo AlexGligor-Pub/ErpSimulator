@@ -3,10 +3,24 @@
 @inject ApiService ApiService
 @rendermode InteractiveServer
 @attribute [StreamRendering]
-
+ @using Microsoft.AspNetCore.Components.Forms
 <h3>Send Data</h3>
 
-<button @onclick="PostData">Post Data</button>
+@if (!isPressed)
+{
+    <h4>Path to IDoc on your machine</h4>
+
+        <div class="form-group">
+            <label for="idocPath">Path to IDoc on your machine</label>
+            <InputText id="idocPath" class="form-control" @bind-Value="idocPath" />
+        </div>
+    <button @onclick="HandleValidSubmit" class="btn btn-primary">Submit</button>
+}
+else
+{
+    <h3>Sending ....</h3>
+}
+
 
 @if (responseMessage != null)
 {
@@ -17,16 +31,23 @@
 @code {
     private string responseMessage;
 
-    private string errorCode;
+    bool isPressed = false;
 
-    private async Task PostData()
+    private string errorCode;
+    private string idocPath;
+
+    private async Task HandleValidSubmit()
     {
+        isPressed = true;
+        responseMessage = null;
+        StateHasChanged();
         var data = new { Name = "Test", Value = "123" }; // Exemplu de date de trimis
 
-        string fileContent = File.ReadAllText(@"C:\Users\dan-alexandru.gligor\Downloads\Idoc.txt");
+        string fileContent = File.ReadAllText(idocPath);
         var response = await ApiService.PostDataAsync("https://accenture-prod-opsmessolution-va627rp8.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com/cxf/GenericMessageProcessor_00", fileContent);
         responseMessage = await response.Content.ReadAsStringAsync();
         errorCode = response.StatusCode.ToString();
+        isPressed = false;
 
         StateHasChanged();
     }

@@ -11,6 +11,7 @@
 <PageTitle>Bucket Orders</PageTitle>
 
 <h1>Bucket Orders</h1>
+<button class="btn btn-primary" @onclick="Create"> Create new bucket</button>
 
 @if (buckets == null)
 {
@@ -42,7 +43,7 @@ else
                     <td>@order.StartDate</td>
                     <td>@order.EndDate</td>
                     <td>@order.Created</td>
-                    @if (order.UnsOrders.Count == 0)
+                    @if (order.UnsOrders == null || order.UnsOrders.Count == 0)
                     {
                         <button class="btn btn-primary p-1 m-1" style="color: black;"  @onclick="()=>GenerateOrders(order)">Generate Orders</button>
                     }
@@ -82,6 +83,14 @@ else
     private async void SendBucket(OrdersBucket order)
     {
         await ordersBucketService.Sent(order);
+        StateHasChanged();
+    }
+
+    private async void Create()
+    {
+        var order = new OrdersBucket() {  UnsOrderId = "order1", StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), RequestCount = 5 };
+        await ordersBucketService.CreateOrdersBucketAsync(order);
+        buckets.Add(order);
         StateHasChanged();
     }
 }
