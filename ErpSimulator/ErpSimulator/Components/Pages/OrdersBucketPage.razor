@@ -34,7 +34,7 @@ else
         <tbody>
             @foreach (var order in buckets)
             {
-                <tr>
+                <tr @onclick="()=>SelectedOrder(order)">
                     <td>@order.Id</td>
                     <td>@order.UnsOrder.ID</td>
                     <td>@order.State</td>
@@ -62,11 +62,18 @@ else
             }
         </tbody>
     </table>
+
+    <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
+        <pre>@BucketOrderJson</pre>
+        <button class="btn btn-danger" @onclick="DeleteOrder">Delete</button>
+    </ErpSimulator.Components.Pages.Common.Modal>
 }
 
 @code {
     private List<OrdersBucket>? buckets;
     private bool isModalVisible = false;
+    private string BucketOrderJson;
+    private OrdersBucket selectedOrder;
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,5 +90,24 @@ else
     {
         await ordersBucketService.Sent(order);
         StateHasChanged();
+    }
+
+    private void SelectedOrder(OrdersBucket order)
+    {
+        isModalVisible = true;
+        selectedOrder = order;
+        BucketOrderJson = JsonSerializer.Serialize(order, new JsonSerializerOptions { WriteIndented = true });
+    }
+
+    private async Task DeleteOrder()
+    {
+        if(selectedOrder != null)
+        {
+            await ordersBucketService.DeleteOrdersBucketAsync(selectedOrder.Id);
+            buckets.Remove(selectedOrder);
+            selectedOrder = null;
+            isModalVisible = false;
+            StateHasChanged();
+        }
     }
 }
