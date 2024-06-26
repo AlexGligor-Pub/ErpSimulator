@@ -1,19 +1,17 @@
 ﻿using Domain.Entities.UNS;
 using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace Infrastructure.Services
 {
     public class OrderStateMachineService
     {
-        UnsOrderService unsOrderService;
-        public OrderStateMachineService(UnsOrderService unsOrderService)
+        private UnsOrderService unsOrderService;
+        private SapOrderService sapOrderService;
+        public OrderStateMachineService(UnsOrderService unsOrderService, SapOrderService sapOrderService)
         {
             this.unsOrderService = unsOrderService;
+            this.sapOrderService = sapOrderService;
         }
 
         public async Task ChangeState(UnsOrder order)
@@ -25,8 +23,22 @@ namespace Infrastructure.Services
                     break;
 
                 case OrderState.Created:
-                    order.ERPState = OrderState.SentToUNS;
+
+                    if (order.Client == IntegrationClient.SAP)
+                    {
+                        var status = await sapOrderService.SendOrderToSapAsync(order);
+                        if(status == HttpStatusCode.OK)
+                            order.ERPState = OrderState.SentToSAP;
+                        else
+                            order.ERPState = OrderState.SendToSapFailed;
+                    }
+                    else if (order.Client == IntegrationClient.MQTT)
+                    {
+                        order.ERPState = OrderState.SentToSAP;
+                    }
+
                     await unsOrderService.UpdateUnsOrderAsync(order);
+
                     break;
 
                 case OrderState.SentToUNS:

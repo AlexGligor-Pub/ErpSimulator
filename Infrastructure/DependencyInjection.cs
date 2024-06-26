@@ -44,6 +44,7 @@ namespace Infrastructure
             ));
 
             services.AddScoped<ApiService>();
+            services.AddScoped<SapOrderService>();
 
             return services;
         }

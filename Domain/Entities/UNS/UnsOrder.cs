@@ -1,11 +1,10 @@
 ﻿using Domain.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Domain.Entities.UNS
 {
-    public class UnsOrder
+    public class UnsOrder:OrderHeader
     {
         [Key]
         public string ID { get; set; }
@@ -24,7 +23,7 @@ namespace Domain.Entities.UNS
 
         public string? Status { get; set; }
 
-        public string? MaterialId { get; set; }
+        public string? MaterialId { get; set; } = "SEMI";
 
         public int OrderQuantity { get; set; }
 
@@ -33,9 +32,6 @@ namespace Domain.Entities.UNS
         public string? Facility { get; set; }
 
         public string? Executor { get; set; }
-
-        [JsonIgnore]
-        public OrderState ERPState { get; set; }
 
         public List<Component> ComponentList { get; set; }
 
