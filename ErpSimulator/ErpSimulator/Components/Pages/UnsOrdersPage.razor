@@ -8,9 +8,9 @@
 @attribute [StreamRendering]
 @inject UnsOrderService UnsOrderService
 
-<PageTitle>UNS Orders</PageTitle>
+<PageTitle>Orders</PageTitle>
 
-<h1>UNS Orders</h1>
+<h1>Orders</h1>
 
 
 @if (demoOrders == null)
@@ -23,6 +23,7 @@ else
         <thead>
             <tr>
                 <th>ID</th>
+                <th>ERP State</th>
                 <th>Description</th>
                 <th>Type</th>
                 <th>Start</th>
@@ -41,6 +42,7 @@ else
             {
                 <tr @onclick="()=>SelectedOrder(order)">
                     <td>@order.ID</td>
+                    <td>@order.ERPState</td>
                     <td>@order.Description</td>
                     <td>@order.Type</td>
                     <td>@order.StartTime</td>
