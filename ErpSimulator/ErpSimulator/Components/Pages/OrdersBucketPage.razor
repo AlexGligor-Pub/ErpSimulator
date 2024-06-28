@@ -42,16 +42,17 @@ else
                     <td>@order.StartDate</td>
                     <td>@order.EndDate</td>
                     <td>@order.Created</td>
-                    @if (order.UnsOrders.Count == 0)
+                    @if (order.UnsOrders == null || order.UnsOrders.Count == 0)
                     {
-                        <button class="btn btn-primary p-1 m-1" style="color: black;"  @onclick="()=>GenerateOrders(order)">Generate Orders</button>
+                        <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick:stopPropagation="true" @onclick="()=>GenerateOrders(order)">Generate Orders</button>
                     }
                     else
                     {
-                        if (order.State == Domain.Enums.BucketOrdersState.OrdersAreReady) 
+                        if (order.State == Domain.Enums.BucketOrdersState.OrdersAreReady)
                         {
-                            <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick="()=>SendBucket(order)">Send to UNS</button>
+                            <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick:stopPropagation="true" @onclick="()=>SendBucket(order)">Send to UNS</button>
                         }
+
                         else
                         {
                             <p>All done!</p>
@@ -64,16 +65,43 @@ else
     </table>
 
     <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
-        <pre>@BucketOrderJson</pre>
-        <button class="btn btn-danger" @onclick="DeleteOrder">Delete</button>
+        <div class="p-2 m-2">
+            <EditForm Model="@selectedOrder" OnValidSubmit="SaveChanges">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <div class="form-group p-2">
+                    <label for="status">Status</label>
+                    <InputSelect class="form-control" id="status" @bind-Value="selectedOrder.State">
+                        @foreach (var status in Enum.GetValues(typeof(Domain.Enums.BucketOrdersState)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </InputSelect>
+
+                    <label for="requestCount">Request Count</label>
+                    <InputNumber id="requestCount" class="form-control mb-3" @bind-Value="selectedOrder.RequestCount" />
+
+                    <label for="startDate">Start Date</label>
+                    <InputDate id="startDate" class="form-control mb-3" @bind-Value="selectedOrder.StartDate" />
+
+                    <label for="endDate">End Date</label>
+                    <InputDate id="endDate" class="form-control mb-3" @bind-Value="selectedOrder.EndDate" />
+                </div>
+
+                <div class="d-flex justify-content-between mt-2">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-danger" @onclick="DeleteOrder">Delete</button>
+                </div>
+            </EditForm>
+        </div>
+
+
     </ErpSimulator.Components.Pages.Common.Modal>
 }
 
 @code {
     private List<OrdersBucket>? buckets;
     private bool isModalVisible = false;
-    private string BucketOrderJson;
-    private OrdersBucket selectedOrder;
+    private OrdersBucket selectedOrder = new OrdersBucket();
 
     protected override async Task OnInitializedAsync()
     {
@@ -96,12 +124,11 @@ else
     {
         isModalVisible = true;
         selectedOrder = order;
-        BucketOrderJson = JsonSerializer.Serialize(order, new JsonSerializerOptions { WriteIndented = true });
     }
 
     private async Task DeleteOrder()
     {
-        if(selectedOrder != null)
+        if (selectedOrder != null)
         {
             await ordersBucketService.DeleteOrdersBucketAsync(selectedOrder.Id);
             buckets.Remove(selectedOrder);
@@ -110,4 +137,15 @@ else
             StateHasChanged();
         }
     }
+
+    private async Task SaveChanges()
+    {
+        await ordersBucketService.UpdateOrdersBucketAsync(selectedOrder);
+        isModalVisible = false;
+        StateHasChanged();
+    }
 }
+ 
+
+    
+
