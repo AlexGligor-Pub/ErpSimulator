@@ -1,6 +1,9 @@
 using HiveMQtt.Client;
 using HiveMQtt.Client.Options;
+using Infrastructure.Configuration;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Configuration;
 
 public class MQTTPublisher
 {

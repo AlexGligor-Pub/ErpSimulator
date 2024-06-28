@@ -3,25 +3,25 @@
 using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
 using Infrastructure.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.Extensions.Configuration;
-using Infrastructure.SAPDM;
+using Infrastructure.Configuration;
+using System.Configuration;
 
 namespace Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, WebApplicationBuilder builder)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            var configService = new ConfigurationManagerService();
+            services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(configService.GetConnectionString("DefaultConnection")));
             services.AddScoped<IDemoOrderService, DemoOrderService>();
             services.AddScoped<UnsOrderService>();
             services.AddScoped<OrdersBucketService>();
             services.AddScoped<OrderStateMachineService>();
             services.AddScoped<BucketOrderProcessorService>();
+            services.AddScoped<ConfigurationManagerService>();
             services.AddScoped<MQTTPublisher>();
-
+          
             var baseAddress = builder.Configuration.GetValue<string>("ApiSettings:BaseAddress");
             var tokenUrl = builder.Configuration.GetValue<string>("ApiSettings:TokenUrl");
             var clientId = builder.Configuration.GetValue<string>("ApiSettings:ClientId");

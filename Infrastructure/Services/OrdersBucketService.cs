@@ -31,9 +31,8 @@ namespace Infrastructure.Services
 
         public async Task GenerateOrdersAsync(OrdersBucket ordersBucket)
         {
-            if(ordersBucket.UnsOrders != null)
-                if ( ordersBucket.UnsOrders.Count > 0)
-                    return;
+            if (ordersBucket.UnsOrders.Count > 0)
+                return;
 
             ordersBucket.State = BucketOrdersState.GeneratingOrders;
             await _context.SaveChangesAsync();

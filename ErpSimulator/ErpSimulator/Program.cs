@@ -8,7 +8,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddInfrastructureServices(builder);
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 
