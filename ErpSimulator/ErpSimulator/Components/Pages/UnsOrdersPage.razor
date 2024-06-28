@@ -7,6 +7,7 @@
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject UnsOrderService UnsOrderService
+@inject OrdersBucketService OrdersBucketService
 
 <PageTitle>Orders</PageTitle>
 
@@ -57,8 +58,11 @@ else
             }
         </tbody>
     </table>
-  
+
+
     <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
+        <button class="btn btn-primary" @onclick="CreateBucket">Create Bucket</button>
+        <hr />
         <pre>@UnsOrderJson</pre>
     </ErpSimulator.Components.Pages.Common.Modal>
 }
@@ -67,6 +71,7 @@ else
     private List<UnsOrder>? demoOrders;
     private string UnsOrderJson;
     private bool isModalVisible = false;
+    private UnsOrder selectedOrder;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,5 +82,26 @@ else
     {
         isModalVisible = true;
         UnsOrderJson = JsonSerializer.Serialize(order,new JsonSerializerOptions{WriteIndented = true});
+        selectedOrder = order;
     }
+
+    private async Task CreateBucket()
+    {
+        if (selectedOrder != null)
+        {
+            var newBucketOrder = new OrdersBucket
+                {
+                    UnsOrderId = selectedOrder.ID,
+                    RequestCount = 1,
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddDays(7)
+                };
+
+            await OrdersBucketService.CreateOrdersBucketAsync(newBucketOrder);
+            StateHasChanged();
+        }
+
+        isModalVisible = false;
+    }
+
 }
