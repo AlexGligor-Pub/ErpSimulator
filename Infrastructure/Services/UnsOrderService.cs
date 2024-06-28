@@ -16,6 +16,7 @@ namespace Infrastructure.Services
         // Create UnsOrder
         public async Task CreateUnsOrderAsync(UnsOrder unsOrder)
         {
+            unsOrder.ERPState = Domain.Enums.OrderState.Created;
             await _context.UnsOrders.AddAsync(unsOrder);
             await _context.SaveChangesAsync();
         }

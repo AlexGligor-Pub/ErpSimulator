@@ -10,8 +10,10 @@ namespace Infrastructure.DataBase
         public static void SeedOrdersBucketData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrdersBucket>().HasData(
-                new OrdersBucket() { Id = 1, UnsOrderId = "order1", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 5, StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(9) },
-                new OrdersBucket() { Id = 2, UnsOrderId = "order2", Created = DateTime.UtcNow , State = BucketOrdersState.Created, RequestCount = 10, StartDate = DateTime.Now.AddDays(4), EndDate = DateTime.Now.AddDays(18) }
+
+                new OrdersBucket() { Id = 1, UnsOrderId = "order1", Created = DateTime.UtcNow, State = BucketOrdersState.Created, RequestCount = 2, StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(9) },
+                new OrdersBucket() { Id = 2, UnsOrderId = "order2", Created = DateTime.UtcNow, State = BucketOrdersState.Created, RequestCount = 1, StartDate = DateTime.Now.AddDays(4), EndDate = DateTime.Now.AddDays(18) }
+
             );
         }
         public static void SeedDemoOrderData(ModelBuilder modelBuilder)
@@ -38,7 +40,7 @@ namespace Infrastructure.DataBase
                 Priority = "High",
                 OrderState = "Open",
                 Status = "Active",
-                MaterialId = "Material3",
+                MaterialId = "SEMI",
                 OrderQuantity = 100,
                 UnitOfMeasure = "LTR",
                 Facility = "Facility1",
@@ -54,7 +56,7 @@ namespace Infrastructure.DataBase
                 Priority = "Medium",
                 OrderState = "Closed",
                 Status = "Inactive",
-                MaterialId = "Material3",
+                MaterialId = "SEMI",
                 OrderQuantity = 200,
                 UnitOfMeasure = "LTR",
                 Facility = "Facility2",
@@ -104,7 +106,7 @@ namespace Infrastructure.DataBase
             },
             new Component
             {
-                ComponentId = "Material3",
+                ComponentId = "SEMI",
                 Quantity = 300,
                 UnitOfMeasure = "LTR"
             },
@@ -119,7 +121,7 @@ namespace Infrastructure.DataBase
             {
                 new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "Material1"  },
                 new UnsOrderComponentMap(){UnsOrderId = "order1", ComponentId = "Material2"  },
-                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "Material3"  },
+                new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "SEMI"  },
                 new UnsOrderComponentMap(){UnsOrderId = "order2", ComponentId = "Material4"  },
             };
 

@@ -51,6 +51,11 @@ else
                         if (order.State == Domain.Enums.BucketOrdersState.OrdersAreReady)
                         {
                             <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick:stopPropagation="true" @onclick="()=>SendBucket(order)">Send to UNS</button>
+                            <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick="()=>SendBucketToSAP(order)">Send to SAP</button>
+                        }
+                        else if (order.State == Domain.Enums.BucketOrdersState.SendingOrders)
+                        {
+                            <p>Sending ...</p>
                         }
 
                         else
@@ -115,7 +120,10 @@ else
     }
 
     private async void SendBucket(OrdersBucket order)
+
     {
+        order.State = Domain.Enums.BucketOrdersState.SendingOrders;
+        StateHasChanged();
         await ordersBucketService.Sent(order);
         StateHasChanged();
     }
@@ -124,6 +132,14 @@ else
     {
         isModalVisible = true;
         selectedOrder = order;
+    }
+ 
+    private async void SendBucketToSAP(OrdersBucket order)
+    {
+        order.State = Domain.Enums.BucketOrdersState.SendingOrders;
+        StateHasChanged();
+        await ordersBucketService.SentToSAP(order);
+        StateHasChanged();
     }
 
     private async Task DeleteOrder()

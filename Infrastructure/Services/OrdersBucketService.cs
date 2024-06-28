@@ -47,7 +47,7 @@ namespace Infrastructure.Services
                 {
                     var order = (UnsOrder)ordersBucket.UnsOrder.Clone();
 
-                    order.ID = order.ID + "_" + i.ToString() + DateTime.Now.Ticks.ToString() + random.Next().ToString();
+                    order.ID = order.ID.ToUpper() + i.ToString() + DateTime.Now.Ticks.ToString();
                     order.StartTime = startDate;
                     order.EndTime = startDate.AddSeconds(seconds);
                     startDate = order.EndTime;
@@ -77,6 +77,15 @@ namespace Infrastructure.Services
         public async Task Sent(OrdersBucket order)
         {
             var isSent = await bucketOrderProcessorService.SentToUNS(order.UnsOrders.ToList());
+            if (!isSent)
+                return;
+            order.State = Domain.Enums.BucketOrdersState.Sent;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SentToSAP(OrdersBucket order)
+        {
+            var isSent = await bucketOrderProcessorService.SentToSAP(order.UnsOrders.ToList());
             if (!isSent)
                 return;
             order.State = Domain.Enums.BucketOrdersState.Sent;

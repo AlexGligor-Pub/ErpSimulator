@@ -21,6 +21,31 @@ namespace Infrastructure
             services.AddScoped<BucketOrderProcessorService>();
             services.AddScoped<ConfigurationManagerService>();
             services.AddScoped<MQTTPublisher>();
+          
+            var baseAddress = builder.Configuration.GetValue<string>("ApiSettings:BaseAddress");
+            var tokenUrl = builder.Configuration.GetValue<string>("ApiSettings:TokenUrl");
+            var clientId = builder.Configuration.GetValue<string>("ApiSettings:ClientId");
+            var clientSecret = builder.Configuration.GetValue<string>("ApiSettings:ClientSecret");
+
+            builder.Services.AddHttpClient("YourAPI", client =>
+            {
+                client.BaseAddress = new Uri(baseAddress);
+            }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            });
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("YourAPI"));
+
+            builder.Services.AddTransient(sp => new AuthService(
+                sp.GetRequiredService<IHttpClientFactory>().CreateClient("YourAPI"),
+                clientId,
+                clientSecret,
+                tokenUrl
+            ));
+
+            services.AddScoped<ApiService>();
+            services.AddScoped<SapOrderService>();
+
             return services;
         }
     }

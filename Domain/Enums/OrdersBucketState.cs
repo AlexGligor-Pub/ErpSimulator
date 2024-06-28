@@ -7,5 +7,7 @@
         OrdersAreReady=3,
         Sent = 4,
         OnHold = 5,
+        SendingOrders = 6,
+
     }
 }
