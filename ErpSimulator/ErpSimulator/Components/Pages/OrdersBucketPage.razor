@@ -34,7 +34,7 @@ else
         <tbody>
             @foreach (var order in buckets)
             {
-                <tr @onclick="()=>SelectedOrder(order)">
+                <tr @onclick="() => SelectedOrder(order)">
                     <td>@order.Id</td>
                     <td>@order.UnsOrder.ID</td>
                     <td>@order.State</td>
@@ -42,31 +42,33 @@ else
                     <td>@order.StartDate</td>
                     <td>@order.EndDate</td>
                     <td>@order.Created</td>
-                    @if (order.UnsOrders == null || order.UnsOrders.Count == 0)
-                    {
-                        <button class="btn btn-primary p-1 m-1" style="color: black;"  @onclick="()=>GenerateOrders(order)">Generate Orders</button>
-                    }
-                    else
-                    {
-                        if (order.State == Domain.Enums.BucketOrdersState.OrdersAreReady)
+                    <td>
+                        @if (order.UnsOrders == null || order.UnsOrders.Count == 0)
                         {
-                            <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick="()=>SendBucket(order)">Send to UNS</button>
-                            <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick="()=>SendBucketToSAP(order)">Send to SAP</button>
-                        }
-                        else if (order.State == Domain.Enums.BucketOrdersState.SendingOrders)
-                        {
-                            <p>Sending ...</p>
+                            <button class="btn btn-primary"  @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="() => GenerateOrders(order)">Generate Orders</button>
                         }
                         else
                         {
-                            <p>All done!</p>
+                            @if (order.State == Domain.Enums.BucketOrdersState.OrdersAreReady)
+                            {
+                                <button class="btn btn-primary"  @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="() => SendBucket(order)">Send to UNS</button>
+                                <button class="btn btn-primary" @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="() => SendBucketToSAP(order)">Send to SAP</button>
+                            }
+                            else if (order.State == Domain.Enums.BucketOrdersState.SendingOrders)
+                            {
+                                <p>Sending ...</p>
+                            }
+                            else
+                            {
+                                <p>All done!</p>
+                            }
                         }
-
-                    }
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+
 }
 
 <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
