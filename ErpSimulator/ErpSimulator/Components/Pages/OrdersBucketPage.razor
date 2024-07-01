@@ -34,7 +34,7 @@ else
         <tbody>
             @foreach (var order in buckets)
             {
-                <tr @onclick="()=>SelectedOrder(order)">
+                <tr @onclick="() => SelectedOrder(order)">
                     <td>@order.Id</td>
                     <td>@order.UnsOrder.ID</td>
                     <td>@order.State</td>
@@ -42,70 +42,71 @@ else
                     <td>@order.StartDate</td>
                     <td>@order.EndDate</td>
                     <td>@order.Created</td>
-                    @if (order.UnsOrders == null || order.UnsOrders.Count == 0)
-                    {
-                        <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick:stopPropagation="true" @onclick="()=>GenerateOrders(order)">Generate Orders</button>
-                    }
-                    else
-                    {
-                        if (order.State == Domain.Enums.BucketOrdersState.OrdersAreReady)
+                    <td>
+                        @if (order.UnsOrders == null || order.UnsOrders.Count == 0)
                         {
-                            <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick:stopPropagation="true" @onclick="()=>SendBucket(order)">Send to UNS</button>
-                            <button class="btn btn-primary p-1 m-1" style="color: black;" @onclick="()=>SendBucketToSAP(order)">Send to SAP</button>
+                            <button class="btn btn-primary"  @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="() => GenerateOrders(order)">Generate Orders</button>
                         }
-                        else if (order.State == Domain.Enums.BucketOrdersState.SendingOrders)
-                        {
-                            <p>Sending ...</p>
-                        }
-
                         else
                         {
-                            <p>All done!</p>
+                            @if (order.State == Domain.Enums.BucketOrdersState.OrdersAreReady)
+                            {
+                                <button class="btn btn-primary"  @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="() => SendBucket(order)">Send to UNS</button>
+                                <button class="btn btn-primary" @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="() => SendBucketToSAP(order)">Send to SAP</button>
+                            }
+                            else if (order.State == Domain.Enums.BucketOrdersState.SendingOrders)
+                            {
+                                <p>Sending ...</p>
+                            }
+                            else
+                            {
+                                <p>All done!</p>
+                            }
                         }
-
-                    }
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
-        <div class="p-2 m-2">
-            <EditForm Model="@selectedOrder" OnValidSubmit="SaveChanges">
-                <DataAnnotationsValidator></DataAnnotationsValidator>
-                <div class="form-group p-2">
-                    <label for="status">Status</label>
-                    <InputSelect class="form-control" id="status" @bind-Value="selectedOrder.State">
-                        @foreach (var status in Enum.GetValues(typeof(Domain.Enums.BucketOrdersState)))
-                        {
-                            <option value="@status">@status</option>
-                        }
-                    </InputSelect>
-
-                    <label for="requestCount">Request Count</label>
-                    <InputNumber id="requestCount" class="form-control mb-3" @bind-Value="selectedOrder.RequestCount" />
-
-                    <label for="startDate">Start Date</label>
-                    <InputDate id="startDate" class="form-control mb-3" @bind-Value="selectedOrder.StartDate" />
-
-                    <label for="endDate">End Date</label>
-                    <InputDate id="endDate" class="form-control mb-3" @bind-Value="selectedOrder.EndDate" />
-                </div>
-
-                <div class="d-flex justify-content-between mt-2">
-                    <button type="submit" class="btn btn-success">Save</button>
-                    <button type="button" class="btn btn-danger" @onclick="DeleteOrder">Delete</button>
-                </div>
-            </EditForm>
-        </div>
-
-
-    </ErpSimulator.Components.Pages.Common.Modal>
 }
+
+<ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
+    <div class="p-2 m-2">
+        <EditForm Model="@selectedOrder">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="form-group p-2">
+                <label for="status">Status</label>
+                <InputSelect class="form-control" id="status" @bind-Value="selectedOrder.State">
+                    @foreach (var status in Enum.GetValues(typeof(Domain.Enums.BucketOrdersState)))
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </InputSelect>
+
+                <label for="requestCount">Request Count</label>
+                <InputNumber id="requestCount" class="form-control mb-3" @bind-Value="selectedOrder.RequestCount" />
+
+                <label for="startDate">Start Date</label>
+                <InputDate id="startDate" class="form-control mb-3" @bind-Value="selectedOrder.StartDate" />
+
+                <label for="endDate">End Date</label>
+                <InputDate id="endDate" class="form-control mb-3" @bind-Value="selectedOrder.EndDate" />
+            </div>
+
+            <div class="d-flex justify-content-between mt-2">
+                <button type="submit" class="btn btn-success" @onclick="SaveChanges">Save</button>
+                <button type="button" class="btn btn-danger" @onclick="DeleteOrder">Delete</button>
+            </div>
+        </EditForm>
+    </div>
+</ErpSimulator.Components.Pages.Common.Modal>
+
 
 @code {
     private List<OrdersBucket>? buckets;
     private bool isModalVisible = false;
+
     private OrdersBucket selectedOrder = new OrdersBucket();
 
     protected override async Task OnInitializedAsync()
@@ -133,7 +134,7 @@ else
         isModalVisible = true;
         selectedOrder = order;
     }
- 
+
     private async void SendBucketToSAP(OrdersBucket order)
     {
         order.State = Domain.Enums.BucketOrdersState.SendingOrders;
@@ -141,6 +142,7 @@ else
         await ordersBucketService.SentToSAP(order);
         StateHasChanged();
     }
+
 
     private async Task DeleteOrder()
     {
