@@ -13,7 +13,10 @@
 
 <PageTitle>Orders</PageTitle>
 
-<h1>Orders</h1>
+<div style="display: flex; flex-direction: row">
+    <h1>Orders</h1>
+    <button style="margin-left: 15px" type="button" @onclick="openCreateOrder">Create order</button>
+</div>
 
 
 @if (demoOrders == null)
@@ -22,6 +25,7 @@
 }
 else
 {
+    <div>
     <table class="table">
         <thead>
             <tr>
@@ -60,17 +64,18 @@ else
             }
         </tbody>
     </table>
+    </div>
 
 
-    <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
+    <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isEditModalVisible" IsVisibleChanged="@((bool value) => isEditModalVisible = value)">
         <button class="btn btn-primary" @onclick="CreateBucket">Create Bucket</button>
         <hr />
         <pre>@UnsOrderJson</pre>
     </ErpSimulator.Components.Pages.Common.Modal>
 
-    <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isModalVisible" IsVisibleChanged="@((bool value) => isModalVisible = value)">
+    <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isEditModalVisible" IsVisibleChanged="@((bool value) => isEditModalVisible = value)">
         <div class="p-2 m-2">
-            <EditForm Model="@selectedOrder" OnValidSubmit="SaveChanges">
+            <EditForm Model="@selectedOrder" OnValidSubmit="UpdateOrder">
                 <DataAnnotationsValidator></DataAnnotationsValidator>
                 <div class="form-group p-2">
                     <div style="display: flex; flex-direction: row; gap: 100px; margin-top: 20px">
@@ -107,26 +112,14 @@ else
                                 <div style="width: 100px;">MaterialId:</div>
                                 <InputText @bind-Value="selectedOrder!.MaterialId" />
                             </label>
-                        </div>
-                        <div style="display: flex; flex-direction: column">
                             <label>Components:</label>
-                            <div id="ScrollCB" style="height:140px;width:250px;overflow:auto; margin-bottom: 10px">
-                                <select multiple @bind="selectedOrder.ComponentList">
-                                    @foreach (var component in components)
-                                    {
-                                        <option value="@component" key="@component">@component.ComponentId</option>
-                                    }
-                                </select>
-                            </div>
+                                <div id="ScrollCB" style="height:140px;width:250px;overflow:auto; margin-bottom: 10px">
+                                
+                                </div>
                             <label>Operations Instructions:</label>
-                            <div id="ScrollCB" style="height:140px;width:250px;overflow:auto">
-                                <select multiple @bind="selectedOrder.OperationsInstruction">
-                                    @foreach (var operationInstruction in operationInstructions)
-                                    {
-                                        <option value="@operationInstruction" key="@operationInstruction">@operationInstruction.Description</option>
-                                    }
-                                </select>
-                            </div>
+                                <div id="ScrollCB" style="height:140px;width:250px;overflow:auto">
+                                
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -140,24 +133,115 @@ else
 
 
     </ErpSimulator.Components.Pages.Common.Modal>
+
+    <ErpSimulator.Components.Pages.Common.Modal IsVisible="@isCreateModalVisible" IsVisibleChanged="@((bool value) => isCreateModalVisible = value)" >
+        <div class="form-group p-2" style="width: 400px">
+            <EditForm Model="@OrderForm" OnValidSubmit="CreateOrder">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <div class="form-group p-2">
+            <div style="display: flex; flex-direction: row; gap: 100px; margin-top: 20px">
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">ID:</div>
+                        <InputText @bind-Value="OrderForm!.ID" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;"> Description:</div>
+                        <InputText @bind-Value="OrderForm!.Description" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">Type:</div>
+                        <InputText @bind-Value="OrderForm!.Type" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">Start:</div>
+                        <InputDate @bind-Value="OrderForm!.StartTime" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">End:</div>
+                        <InputDate @bind-Value="OrderForm!.EndTime" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">Priority:</div>
+                        <InputText @bind-Value="OrderForm!.Priority" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">State:</div>
+                        <InputText @bind-Value="OrderForm!.OrderState" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">Status:</div>
+                        <InputText @bind-Value="OrderForm!.Status" />
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">MaterialId:</div>
+                        <InputText @bind-Value="OrderForm!.MaterialId" />
+                    </label>
+                            
+                    <label>Components:</label>
+                        <div id="ScrollCB" style="height:140px;width:250px;overflow:auto; margin-bottom: 10px">
+                                
+                        </div>
+                    <label>Operations Instructions:</label>
+                        <div id="ScrollCB" style="height:140px;width:250px;overflow:auto">
+                                
+                        </div>
+                            
+                </div>
+                
+            </div>
+            </div>
+
+        <div style="margin-top: 15px">
+            <button type="submit">Submit</button>
+        </div>
+        </EditForm>
+        </div>
+
+    </ErpSimulator.Components.Pages.Common.Modal>
 }
 
 @code {
     private List<UnsOrder>? demoOrders;
     private string UnsOrderJson;
-    private bool isModalVisible = false;
+    private bool isEditModalVisible = false;
+    private bool isCreateModalVisible = false;
     private UnsOrder selectedOrder;
-    public List<Component> components = new List<Component>();
-    public List<OperationsInstruction> operationInstructions = new List<OperationsInstruction>();
+    public List<string> components = new List<string>();
+    public List<string> operationInstructions = new List<string>();
+    public UnsOrder? OrderForm = new UnsOrder();
 
     protected override async Task OnInitializedAsync()
     {
         demoOrders = await UnsOrderService.GetUnsOrdersAsync();
     }
 
-    private void CreateUNSOrder()
+    private void openCreateOrder()
     {
-        _nav.NavigateTo("/createUNSOrder");
+        isCreateModalVisible = true;
+    }
+
+    private async Task CreateOrder()
+    {
+        await UnsOrderService.CreateUnsOrderAsync(OrderForm);
+        isCreateModalVisible = false;
+        OrderForm.ComponentListMap = new List<UnsOrderComponentMap>();
+        OrderForm.OperationsInstructionMap = new List<UnsOrderOperationstMap>();
+        demoOrders.Add(OrderForm);
+    }
+
+    private void SelectedOrder(UnsOrder order)
+    {
+        isEditModalVisible = true;
+        UnsOrderJson = JsonSerializer.Serialize(order, new JsonSerializerOptions { WriteIndented = true });
+        selectedOrder = order;
+    }
+
+    private async Task UpdateOrder()
+    {
+        await UnsOrderService.UpdateUnsOrderAsync(selectedOrder);
+        isEditModalVisible = false;
+        StateHasChanged();
     }
 
     private async Task DeleteOrder()
@@ -167,16 +251,9 @@ else
             await UnsOrderService.DeleteUnsOrderAsync(selectedOrder.ID);
             demoOrders.Remove(selectedOrder);
             selectedOrder = null;
-            isModalVisible = false;
+            isEditModalVisible = false;
             StateHasChanged();
         }
-    }
-
-    private void SelectedOrder(UnsOrder order)
-    {
-        isModalVisible = true;
-        UnsOrderJson = JsonSerializer.Serialize(order,new JsonSerializerOptions{WriteIndented = true});
-        selectedOrder = order;
     }
 
     private async Task CreateBucket()
@@ -195,14 +272,6 @@ else
             StateHasChanged();
         }
 
-        isModalVisible = false;
+        isEditModalVisible = false;
     }
-
-    private async Task SaveChanges()
-    {
-        await UnsOrderService.UpdateUnsOrderAsync(selectedOrder);
-        isModalVisible = false;
-        StateHasChanged();
-    }
-
 }
