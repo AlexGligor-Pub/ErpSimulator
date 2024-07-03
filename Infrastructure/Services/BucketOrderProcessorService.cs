@@ -38,7 +38,7 @@ namespace Infrastructure.Services
                 foreach (var unsOrder in unsOrders)
                 {
                     unsOrder.Client = Domain.Enums.IntegrationClient.SAP;
-                    if (unsOrder.ERPState == Domain.Enums.OrderState.Created)
+                    // if (unsOrder.ERPState == Domain.Enums.OrderState.Created)
                         await orderStateMachineService.ChangeState(unsOrder);
                 }
             }

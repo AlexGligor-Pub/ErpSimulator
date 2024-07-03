@@ -48,7 +48,7 @@ namespace Infrastructure.Services
                 {
                     var order = (UnsOrder)ordersBucket.UnsOrder.Clone();
 
-                    order.ID = order.ID.ToUpper() + i.ToString() + DateTime.Now.Ticks.ToString();
+                    order.ID = order.ID.ToUpper() + i.ToString() + DateTime.Now.Second.ToString();
                     order.StartTime = startDate;
                     order.EndTime = startDate.AddSeconds(seconds);
                     startDate = order.EndTime;

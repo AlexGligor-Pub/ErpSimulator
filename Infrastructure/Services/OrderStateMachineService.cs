@@ -24,6 +24,11 @@ namespace Infrastructure.Services
 
                 case OrderState.Created:
 
+                case OrderState.SentToUNS:
+
+                case OrderState.SentToSAP:
+
+                case OrderState.SendToSapFailed:
                     if (order.Client == IntegrationClient.SAP)
                     {
                         var status = await sapOrderService.SendOrderToSapAsync(order);
@@ -41,8 +46,7 @@ namespace Infrastructure.Services
 
                     break;
 
-                case OrderState.SentToUNS:
-                    break;
+                
             }
         }
     }

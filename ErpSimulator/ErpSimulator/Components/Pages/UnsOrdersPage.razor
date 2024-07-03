@@ -11,7 +11,37 @@
 
 <PageTitle>Orders</PageTitle>
 
-<h1>Orders</h1>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+        .search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .search-container input {
+            padding-right: 30px; 
+        }
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            color: #aaa;
+        }
+        .search-container input {
+            width: 250px; 
+        }
+ </style>
+
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Orders</h1>
+    <div class="search-container">
+        <InputText class="form-control-sm" @bind-Value="searchObject" placeholder="Search" @oninput="HandleInputChange" />
+        <i class="fas fa-search search-icon"></i>
+    </div>
+</div>
+<hr />
 
 
 @if (demoOrders == null)
@@ -69,13 +99,16 @@ else
 
 @code {
     private List<UnsOrder>? demoOrders;
+    private List<UnsOrder>? list;
     private string UnsOrderJson;
     private bool isModalVisible = false;
     private UnsOrder selectedOrder;
+    private string searchObject;
 
     protected override async Task OnInitializedAsync()
     {
         demoOrders = await UnsOrderService.GetUnsOrdersAsync();
+        list = demoOrders.ToList();
     }
 
     private void SelectedOrder(UnsOrder order)
@@ -102,6 +135,23 @@ else
         }
 
         isModalVisible = false;
+    }
+
+    private async Task HandleInputChange(ChangeEventArgs e)
+    {
+        var findStr = e.Value.ToString();
+
+        demoOrders = list.Where(art => art.ID.ToString().Contains(findStr.ToLower())
+            || art.Description.ToLower().Contains(findStr.ToLower())
+            || art.Type.ToLower().Contains(findStr.ToLower())
+            || art.StartTime.ToString().Contains(findStr.ToLower())
+            || art.EndTime.ToString().Contains(findStr.ToLower())
+            || art.Priority.ToLower().Contains(findStr.ToLower())
+            || art.OrderState.ToLower().Contains(findStr.ToLower())
+            || art.Status.ToLower().Contains(findStr.ToLower())
+            || art.MaterialId.ToLower().Contains(findStr.ToLower())
+            || art.ERPState.ToString().ToLower().Contains(findStr.ToLower())).ToList();
+        StateHasChanged();
     }
 
 }
