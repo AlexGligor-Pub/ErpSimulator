@@ -8,6 +8,8 @@
 @attribute [StreamRendering]
 @inject UnsOrderService UnsOrderService
 @inject OrdersBucketService OrdersBucketService
+@inject ComponentService ComponentService
+@inject OperationsInstructionsService OperationsInstructionsService
 @inject NavigationManager _nav
 
 
@@ -135,14 +137,39 @@ else
                                 <div style="width: 100px;">MaterialId:</div>
                                 <InputText @bind-Value="selectedOrder!.MaterialId" />
                             </label>
-                            <label>Components:</label>
-                                <div id="ScrollCB" style="height:140px;width:250px;overflow:auto; margin-bottom: 10px">
-                                
+                            <label style="display: flex; flex-direction: row;">
+                                <div style="width: 100px;">Components:</div>
+                                <div>
+                                    <select @onchange="EditedComponentsChanged" style="height:140px;min-width:203px;overflow:auto; margin-bottom: 10px" multiple>
+                                        @foreach (var component in components)
+                                        {
+                                            <option 
+                                                value="@component!.ComponentId"
+                                                selected="@selectedOrder!.ComponentListMap.Any(c => c.ComponentId == component.ComponentId)" 
+                                                key="@component.ComponentId"
+                                            >
+                                                @component.ComponentId
+                                            </option>
+                                        }
+                                    </select>
                                 </div>
-                            <label>Operations Instructions:</label>
-                                <div id="ScrollCB" style="height:140px;width:250px;overflow:auto">
-                                
+                            </label>
+                            <label style="display: flex; flex-direction: row;">
+                                <div style="width: 100px;">Operations Instructions:</div>
+                                <div>
+                                    <select @onchange="EditedOperationsInstructionChanged" style="height:140px;min-width:203px;overflow:auto; margin-bottom: 10px" multiple>
+                                        @foreach (var operationsInstruction in operationsInstructions)
+                                        {
+                                            <option 
+                                                value="@operationsInstruction!.ID"
+                                                key="@operationsInstruction.ID"
+                                                    selected="@selectedOrder!.OperationsInstructionMap.Any(oi => oi.OperationsInstructionId == operationsInstruction.ID)">
+                                                @operationsInstruction.ID
+                                            </option>
+                                        }
+                                    </select>
                                 </div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -200,16 +227,28 @@ else
                         <div style="width: 100px;">MaterialId:</div>
                         <InputText @bind-Value="OrderForm!.MaterialId" />
                     </label>
-                            
-                    <label>Components:</label>
-                        <div id="ScrollCB" style="height:140px;width:250px;overflow:auto; margin-bottom: 10px">
-                                
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">Components:</div>
+                            <div>
+                                <select @onchange="SelectedComponentsChanged" style="height:140px;min-width:203px;overflow:auto; margin-bottom: 10px" multiple>
+                                    @foreach (var component in components)
+                                    {
+                                        <option value="@component!.ComponentId" key="@component.ComponentId">@component.ComponentId</option>
+                                    }
+                                </select>
                         </div>
-                    <label>Operations Instructions:</label>
-                        <div id="ScrollCB" style="height:140px;width:250px;overflow:auto">
-                                
+                    </label>
+                    <label style="display: flex; flex-direction: row;">
+                        <div style="width: 100px;">Operations Instructions:</div>
+                        <div>
+                            <select @onchange="SelectedOperationsInstructionChanged" style="height:140px;min-width:203px;overflow:auto; margin-bottom: 10px" multiple>
+                                @foreach (var operationsInstruction in operationsInstructions)
+                                {
+                                    <option value="@operationsInstruction!.ID" key="@operationsInstruction.ID">@operationsInstruction.ID</option>
+                                }
+                            </select>
                         </div>
-                            
+                    </label>
                 </div>
                 
             </div>
@@ -231,14 +270,16 @@ else
     private bool isEditModalVisible = false;
     private bool isCreateModalVisible = false;
     private UnsOrder selectedOrder;
-    public List<string> components = new List<string>();
-    public List<string> operationInstructions = new List<string>();
+    public List<Component>? components;
+    public List<OperationsInstruction> operationsInstructions = new List<OperationsInstruction>();
     public UnsOrder? OrderForm = new UnsOrder();
     private string searchObject;
 
     protected override async Task OnInitializedAsync()
     {
         demoOrders = await UnsOrderService.GetUnsOrdersAsync();
+        components = await ComponentService.GetComponentsAsync();
+        operationsInstructions = await OperationsInstructionsService.GetOperationsInstructionsAsync();
         list = demoOrders.ToList();
     }
 
@@ -247,12 +288,49 @@ else
         isCreateModalVisible = true;
     }
 
+    private List<UnsOrderOperationstMap> GetUnsOrderOperationstMaps(String[] operationsInstructionsIds)
+    {
+        List<UnsOrderOperationstMap> unsOrderOperationstMaps = new List<UnsOrderOperationstMap>();
+        foreach (var operationstId in operationsInstructionsIds)
+        {
+            var selectedOperationInst = operationsInstructions!.Find(opinst => opinst.ID == operationstId);
+            unsOrderOperationstMaps.Add(new UnsOrderOperationstMap() { OperationsInstructionId = operationstId, OperationsInstruction = selectedOperationInst });
+        }
+
+        return unsOrderOperationstMaps;
+    }
+
+    private List<UnsOrderComponentMap> GetUnsOrderComponentsMaps(String[] componentsIds)
+    {
+        List<UnsOrderComponentMap> unsOrderComponentMaps = new List<UnsOrderComponentMap>();
+        foreach (var componentId in componentsIds)
+        {
+            var selectedComponent = components!.Find(c => c.ComponentId == componentId);
+            unsOrderComponentMaps.Add(new UnsOrderComponentMap() { Component = selectedComponent, ComponentId = componentId });
+        }
+
+        return unsOrderComponentMaps;
+    }
+
+    private void SelectedComponentsChanged(ChangeEventArgs e)
+    {
+        var componentsIds = (String[])e!.Value;
+
+        OrderForm!.ComponentListMap = GetUnsOrderComponentsMaps(componentsIds);
+    }
+
+    private void SelectedOperationsInstructionChanged(ChangeEventArgs e)
+    {
+        var operationsInstructionsIds = (String[])e!.Value;
+
+
+        OrderForm!.OperationsInstructionMap = GetUnsOrderOperationstMaps(operationsInstructionsIds);
+    }
+
     private async Task CreateOrder()
     {
         await UnsOrderService.CreateUnsOrderAsync(OrderForm);
         isCreateModalVisible = false;
-        OrderForm.ComponentListMap = new List<UnsOrderComponentMap>();
-        OrderForm.OperationsInstructionMap = new List<UnsOrderOperationstMap>();
         demoOrders.Add(OrderForm);
     }
 
@@ -261,6 +339,21 @@ else
         isEditModalVisible = true;
         UnsOrderJson = JsonSerializer.Serialize(order, new JsonSerializerOptions { WriteIndented = true });
         selectedOrder = order;
+
+    }
+
+    private void EditedComponentsChanged(ChangeEventArgs e)
+    {
+        var componentsIds = (String[])e!.Value;
+
+        selectedOrder.ComponentListMap = GetUnsOrderComponentsMaps(componentsIds);
+    }
+
+    private void EditedOperationsInstructionChanged(ChangeEventArgs e)
+    {
+        var operationsInstructionsIds = (String[])e!.Value;
+
+        selectedOrder.OperationsInstructionMap = GetUnsOrderOperationstMaps(operationsInstructionsIds);
     }
 
     private async Task UpdateOrder()

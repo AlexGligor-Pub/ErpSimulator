@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-using Microsoft.EntityFrameworkCore;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
+using Infrastructure.SAPDM;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Infrastructure.SAPDM;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure
 {
@@ -17,6 +15,8 @@ namespace Infrastructure
             services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IDemoOrderService, DemoOrderService>();
             services.AddScoped<UnsOrderService>();
+            services.AddScoped<ComponentService>();
+            services.AddScoped<OperationsInstructionsService>();
             services.AddScoped<OrdersBucketService>();
             services.AddScoped<OrderStateMachineService>();
             services.AddScoped<BucketOrderProcessorService>();
