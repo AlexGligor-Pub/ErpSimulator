@@ -1,4 +1,6 @@
-﻿using Domain.Entities.UNS;
+﻿using Domain.Entities.DTO.Response;
+using Domain.Entities.UNS;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services
@@ -7,10 +9,13 @@ namespace Infrastructure.Services
     {
         private readonly SqlDbContext _context;
 
-        public UnsOrderService(SqlDbContext context)
+        private readonly IOrderRepository _orderRepository;
+
+        public UnsOrderService(SqlDbContext context, IOrderRepository orderRepository)
         {
             _context = context;
             _context.Database.EnsureCreated();
+            _orderRepository = orderRepository;
         }
 
         // Create UnsOrder
@@ -135,6 +140,22 @@ namespace Infrastructure.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+
+        #region Space to work with OrderRepository
+
+        public async Task<IEnumerable<OrderGroupResponse>> GetOrdersGroupedByPriorityAsync()
+        {
+            return await _orderRepository.GetOrdersGroupedByPriorityAsync();
+        }
+
+        public async Task<IEnumerable<OrderGroupResponse>> GetOrdersGroupedByStatusAsync()
+        {
+            return await _orderRepository.GetOrdersGroupedByStatusAsync();
+        }
+
+        #endregion
+
     }
 
 }

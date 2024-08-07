@@ -4,7 +4,8 @@ using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Infrastructure.SAPDM;
+using Infrastructure.Repository;
 
 namespace Infrastructure
 {
@@ -12,7 +13,17 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
-            services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<SqlDbContext>(options => 
+                options.UseSqlServer(
+                        builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
+                        {
+                            sqlOptions.EnableRetryOnFailure(); // Add retry logic for transient errors
+                        }
+                    )
+                );
+
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
             services.AddScoped<IDemoOrderService, DemoOrderService>();
             services.AddScoped<UnsOrderService>();
             services.AddScoped<ComponentService>();

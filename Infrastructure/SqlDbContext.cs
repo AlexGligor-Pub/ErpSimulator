@@ -55,7 +55,6 @@ namespace Infrastructure
                 .WithMany(b => b.UnsOrders)
                 .HasForeignKey(o => o.OrdersBucketId);
 
-
             SeedData.SeedDemoOrderData(modelBuilder);
             SeedData.SeedUnsOrderData(modelBuilder);
             SeedData.SeedOrdersBucketData(modelBuilder);

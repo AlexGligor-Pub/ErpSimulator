@@ -59,6 +59,70 @@ namespace Infrastructure.DataBase
                 UnitOfMeasure = "LTR",
                 Facility = "MS",
                 Executor = "Executor2"
+            },
+            new UnsOrder
+            {
+                ID = "order3",
+                Description = "Order 3 description",
+                Type = "1",
+                StartTime = DateTime.Now.AddHours(2),
+                EndTime = DateTime.Now.AddHours(3),
+                Priority = "Low",
+                OrderState = "Closed",
+                Status = "Inactive",
+                MaterialId = "SEMI",
+                OrderQuantity = 200,
+                UnitOfMeasure = "LTR",
+                Facility = "MS",
+                Executor = "Executor2"
+            },
+            new UnsOrder
+            {
+                ID = "order4",
+                Description = "Order 4 description",
+                Type = "1",
+                StartTime = DateTime.Now.AddHours(2),
+                EndTime = DateTime.Now.AddHours(3),
+                Priority = "High",
+                OrderState = "Closed",
+                Status = "Inactive",
+                MaterialId = "SEMI",
+                OrderQuantity = 200,
+                UnitOfMeasure = "LTR",
+                Facility = "MS",
+                Executor = "Executor2"
+            },
+            new UnsOrder
+            {
+                ID = "order5",
+                Description = "Order 5 description",
+                Type = "1",
+                StartTime = DateTime.Now.AddHours(2),
+                EndTime = DateTime.Now.AddHours(3),
+                Priority = "High",
+                OrderState = "Closed",
+                Status = "Inactive",
+                MaterialId = "SEMI",
+                OrderQuantity = 200,
+                UnitOfMeasure = "LTR",
+                Facility = "MS",
+                Executor = "Executor2"
+            },
+            new UnsOrder
+            {
+                ID = "order6",
+                Description = "Order 6 description",
+                Type = "1",
+                StartTime = DateTime.Now.AddHours(2),
+                EndTime = DateTime.Now.AddHours(3),
+                Priority = "Low",
+                OrderState = "Closed",
+                Status = "Active",
+                MaterialId = "SEMI",
+                OrderQuantity = 200,
+                UnitOfMeasure = "LTR",
+                Facility = "MS",
+                Executor = "Executor2"
             }
         };
 

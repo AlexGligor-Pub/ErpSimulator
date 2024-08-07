@@ -1,7 +1,53 @@
 ﻿@page "/"
+@using Domain.Entities
+@using System.Text.Json;
+@using Domain.Entities.DTO.Response
+@using Domain.Entities.UNS
+@using Domain.Interfaces
+@using Infrastructure.Services
+@inject UnsOrderService UnsOrderService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Order Grouping</h1>
 
-Welcome to your new app.
+<h2>Orders Grouped by Priority</h2>
+@if (priorityGroups == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var group in priorityGroups)
+        {
+            <li>@group.Group: @group.Number orders</li>
+        }
+    </ul>
+}
+
+<h2>Orders Grouped by Status</h2>
+@if (statusGroups == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var group in statusGroups)
+        {
+            <li>@group.Group: @group.Number orders</li>
+        }
+    </ul>
+}
+
+@code {
+    private IEnumerable<OrderGroupResponse> priorityGroups;
+    private IEnumerable<OrderGroupResponse> statusGroups;
+
+    protected override async Task OnInitializedAsync()
+    {
+        priorityGroups = await UnsOrderService.GetOrdersGroupedByPriorityAsync();
+        statusGroups = await UnsOrderService.GetOrdersGroupedByStatusAsync();
+    }
+}
